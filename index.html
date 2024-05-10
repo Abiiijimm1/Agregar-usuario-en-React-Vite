@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuarios</title>
+  <style>
+    /* Estilos CSS */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #FFF59D;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #E1F5FE;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      margin-bottom: 20px;
+      border-bottom: 4px solid #ddd; /* Agregamos el borde inferior */
+      padding-bottom: 20px; /* Espacio para separar */
+      display: flex; /* Utilizamos flexbox para alinear los elementos */
+      align-items: center; /* Alineamos verticalmente los elementos del formulario */
+    }
+
+    form input[type="text"],
+    form button {
+      margin-right: 10px;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: center; /* Centramos la lista de usuarios */
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    li:last-child {
+      border-bottom: 10px;
+    }
+
+    .edit-delete-buttons {
+      display: flex;
+      justify-content: space-between; /* Centramos los botones horizontalmente */
+      margin-top: 90px; /* Espacio entre los botones y el nombre */
+      text-align: center;
+      padding: 10px 90px;
+    }
+
+    .edit-delete-buttons button {
+      padding: 10px 60px;
+      background-color: #007bff;
+      color: white;
+      border: 9px;
+      border-radius: 9px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .edit-delete-buttons button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LISTA DE USUARIOS</h1>
+    <form id="user-form">
+      <input type="text" id="name" placeholder="Nombre" required>
+      <button type="submit">Agregar Usuario</button>
+    </form>
+    <ul id="user-list"></ul> <!-- Lista de usuarios debajo del formulario -->
+  </div>
+
+  <script>
+    // JavaScript
+    // Clase para manejar la lista de usuarios
+    class UserList {
+      constructor() {
+        this.users = [];
+        this.userForm = document.getElementById('user-form');
+        this.nameInput = document.getElementById('name');
+        this.userListElement = document.getElementById('user-list');
+        this.userForm.addEventListener('submit', this.addUser.bind(this));
+        this.renderUsers();
+      }
+
+      addUser(event) {
+        event.preventDefault();
+        const name = this.nameInput.value.trim();
+        if (name === '') {
+          alert('Por favor, complete todos los campos.');
+          return;
+        }
+        this.users.push({ name });
+        this.renderUsers();
+        this.userForm.reset();
+      }
+
+      renderUsers() {
+        this.userListElement.innerHTML = '';
+        this.users.forEach((user, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span>${user.name}</span>
+            <div class="edit-delete-buttons">
+              <button onclick="userList.editUser(${index})">Editar</button>
+              <button onclick="userList.deleteUser(${index})">Eliminar</button>
+            </div>
+          `;
+          this.userListElement.appendChild(li);
+        });
+      }
+
+      editUser(index) {
+        const newName = prompt('Editar nombre:', this.users[index].name);
+        if (newName !== null && newName.trim() !== '') {
+          this.users[index].name = newName.trim();
+          this.renderUsers();
+        }
+      }
+
+      deleteUser(index) {
+        const confirmDelete = confirm('¿Estás seguro de que deseas eliminar este usuario?');
+        if (confirmDelete) {
+          this.users.splice(index, 1);
+          this.renderUsers();
+        }
+      }
+    }
+
+    const userList = new UserList();
+  </script>
+</body>
+</html>
